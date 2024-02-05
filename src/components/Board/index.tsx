@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import { styled } from 'styled-components'
 import { populateBoard } from '../../features/gameSlice'
 import { useAppDispatch, useAppSelector } from '../../store'
 import Cell from './Cell'
+import * as S from './style'
 
 const Board = () => {
   const dispatch = useAppDispatch()
@@ -14,20 +14,12 @@ const Board = () => {
   }, [])
 
   return (
-    <Main columns={setting.columns}>
+    <S.Main columns={setting.columns}>
       {board.map((rows, y) =>
         rows.map((cell, x) => <Cell key={`${x}, ${y}`} coord={{ x, y }} cell={cell} />)
       )}
-    </Main>
+    </S.Main>
   )
 }
-
-const Main = styled.div<{ columns: number }>`
-  display: grid;
-  border-color: #bdbdbd #fff #fff #bdbdbd;
-  border-style: inset;
-  border-width: 2px;
-  grid-template-columns: ${({ columns }) => `repeat(${columns}, minmax(0, 1fr))`};
-`
 
 export default Board
