@@ -7,9 +7,14 @@ const Minesweeper = () => {
   return (
     <S.Main>
       <MenuBar />
-      <Header />
 
-      <Board />
+      <S.Frame>
+        <S.Content>
+          <Header />
+
+          <Board />
+        </S.Content>
+      </S.Frame>
     </S.Main>
   )
 }

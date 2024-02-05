@@ -1,6 +1,6 @@
 import * as S from './style'
 
-const menu = ['Game', 'Option']
+const menu = ['Game']
 
 const MenuBar = () => {
   return (
