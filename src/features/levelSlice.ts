@@ -1,20 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
-type Level = 'beginner' | 'intermediate' | 'expert' | 'custom'
+export type Level = 'beginner' | 'intermediate' | 'expert' | 'custom'
+
+export interface Setting {
+  rows: number
+  columns: number
+  mines: number
+}
 
 interface LevelSlice {
-  level?: Level
-  customProps: {
-    rows: number
-    columns: number
-    mines: number
-  }
+  level: Level
+  setting: Setting
+  modalOpen: boolean
 }
 
 const initialState: LevelSlice = {
   level: 'beginner',
-  customProps: {
+  modalOpen: false,
+  setting: {
     rows: 8,
     columns: 8,
     mines: 10,
@@ -28,12 +32,17 @@ const levelSlice = createSlice({
     updateLevel: (state, action: PayloadAction<Level>) => {
       state.level = action.payload
     },
-    updateCustomProps: (state, action: PayloadAction<LevelSlice['customProps']>) => {
-      state.customProps = action.payload
+
+    toggleLevelModal: (state) => {
+      state.modalOpen = !state.modalOpen
+    },
+
+    updateSetting: (state, action: PayloadAction<LevelSlice['setting']>) => {
+      state.setting = action.payload
     },
   },
 })
 
-export const { updateLevel, updateCustomProps } = levelSlice.actions
+export const { updateLevel, toggleLevelModal, updateSetting } = levelSlice.actions
 
 export default levelSlice.reducer
