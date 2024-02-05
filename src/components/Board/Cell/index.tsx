@@ -1,18 +1,11 @@
 import { memo, MouseEvent, useCallback, useMemo } from 'react'
-import {
-  Coord,
-  ICell,
-  makeFlag,
-  unveilCell,
-  startGame,
-  updateLeftFlagCount,
-} from '../../../features/gameSlice'
+import { Coord, ICell, makeFlag, unveilCell, startGame } from '../../../features/gameSlice'
 import { useAppDispatch, useAppSelector } from '../../../store'
 import Image from '../../Common/Image'
 
 const Cell = ({ cell, coord }: { cell: ICell; coord: Coord }) => {
   const dispatch = useAppDispatch()
-  const { gameStatus, leftFlagCount } = useAppSelector((state) => state.gameReducer)
+  const { gameStatus } = useAppSelector((state) => state.gameReducer)
   const { mines } = useAppSelector((state) => state.levelReducer.setting)
 
   const onLeftClick = useCallback(
@@ -31,9 +24,6 @@ const Cell = ({ cell, coord }: { cell: ICell; coord: Coord }) => {
     (e: MouseEvent<HTMLImageElement>) => {
       e.preventDefault()
       if (e.button !== 2) return
-      if (leftFlagCount === 0 && cell.type === 'veiled') {
-        dispatch(updateLeftFlagCount(mines))
-      }
 
       dispatch(makeFlag(coord))
     },

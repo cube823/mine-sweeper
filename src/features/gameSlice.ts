@@ -14,7 +14,7 @@ export interface ICell {
 interface GameSlice {
   cells: Coord[]
   board: ICell[][]
-  leftFlagCount: number
+  flagCount: number
   unveiledCount: number
   gameStatus: GameStatus
 }
@@ -27,7 +27,7 @@ export type Coord = {
 const initialState: GameSlice = {
   cells: [],
   board: [],
-  leftFlagCount: 0,
+  flagCount: 0,
   unveiledCount: 0,
   gameStatus: 'ready',
 }
@@ -112,7 +112,7 @@ const gameSlice = createSlice({
     populateBoard: (state, action: PayloadAction<Setting>) => {
       state.board = []
       state.gameStatus = 'ready'
-      state.leftFlagCount = 0
+      state.flagCount = 0
 
       const cells: Coord[] = []
       for (let y = 0; y < action.payload.rows; y++) {
@@ -131,9 +131,7 @@ const gameSlice = createSlice({
       { payload: { startCoord, mines } }: PayloadAction<{ startCoord: Coord; mines: number }>
     ) => {
       state.gameStatus = 'playing'
-      const cells = [...state.cells].filter(
-        (cell) => cell.x !== startCoord.x || cell.y !== startCoord.y
-      )
+      const cells = state.cells.filter((cell) => cell.x !== startCoord.x || cell.y !== startCoord.y)
 
       for (let mineCount = 0; mineCount < mines; mineCount++) {
         const index = Math.floor(Math.random() * cells.length)
@@ -145,29 +143,29 @@ const gameSlice = createSlice({
       const { board, unveiledCount } = areaOpen(startCoord, state.board)
 
       state.board = board
-      state.unveiledCount += unveiledCount
+      state.unveiledCount = unveiledCount
     },
 
     makeFlag: (state, action: PayloadAction<Coord>) => {
       const { x, y } = action.payload
       switch (state.board[y][x].type) {
         case 'veiled':
-          state.leftFlagCount -= 1
+          state.flagCount += 1
           state.board[y][x].isFlagged = true
           state.board[y][x].type = 'flagged'
           break
         case 'flagged':
-          state.leftFlagCount += 1
+          state.flagCount -= 1
           state.board[y][x].isFlagged = false
           state.board[y][x].type = 'question'
           break
         case 'question':
           state.board[y][x].type = 'veiled'
       }
-    },
 
-    updateLeftFlagCount: (state, action: PayloadAction<number>) => {
-      state.leftFlagCount = action.payload
+      if (state.unveiledCount === state.cells.length - state.flagCount) {
+        state.gameStatus = 'won'
+      }
     },
 
     unveilCell: (state, action: PayloadAction<Coord>) => {
@@ -191,14 +189,18 @@ const gameSlice = createSlice({
         return
       }
 
-      state.unveiledCount += 1
+      state.unveiledCount++
       state.board[y][x].neighborMines = count
       state.board[y][x].type = 'unveiled'
+    },
+
+    updateGameStatus: (state, action: PayloadAction<GameStatus>) => {
+      state.gameStatus = action.payload
     },
   },
 })
 
-export const { populateBoard, startGame, makeFlag, updateLeftFlagCount, unveilCell } =
+export const { populateBoard, startGame, updateGameStatus, makeFlag, unveilCell } =
   gameSlice.actions
 
 export default gameSlice.reducer

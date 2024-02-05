@@ -10,6 +10,7 @@ const Emoji = () => {
 
   const src = useMemo(() => {
     if (gameStatus === 'lost') return '/facedead.gif'
+    if (gameStatus === 'won') return '/facewin.gif'
     return '/facesmile.gif'
   }, [gameStatus])
 

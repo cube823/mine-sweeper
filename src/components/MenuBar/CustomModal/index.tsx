@@ -57,7 +57,6 @@ const CustomModal = ({ currentSetting, toggleModalOpen }: CustomModalProps) => {
     closeModal(e)
   }
 
-  setting?.rows
   return (
     <S.Dialog>
       <S.Header>
