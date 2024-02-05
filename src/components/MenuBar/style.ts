@@ -12,7 +12,7 @@ const Item = styled.div`
   margin-bottom: 2px;
 `
 
-const Modal = styled.div`
+const Select = styled.div`
   position: absolute;
   top: 24px;
   left: 4px;
@@ -33,6 +33,11 @@ const Option = styled.div`
   position: relative;
   display: flex;
   gap: 2px;
+  cursor: pointer;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.blue};
+  }
 `
 
-export { Main, Item, Modal, Frame, Option }
+export { Main, Item, Select, Frame, Option }
