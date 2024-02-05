@@ -6,18 +6,28 @@ interface ImageProps extends HTMLAttributes<unknown> {
   height: number
   src: string
   alt: string
+  clickable?: boolean
 }
 
-const Image = ({ width, height, src, alt, ...props }: ImageProps) => {
-  return <Container width={width} height={height} src={src} alt={alt} {...props} />
+const Image = ({ width, height, src, alt, clickable, ...props }: ImageProps) => {
+  return (
+    <Container
+      width={width}
+      height={height}
+      src={src}
+      alt={alt}
+      clickable={`${clickable}`}
+      {...props}
+    />
+  )
 }
 
-const Container = styled.img<{ width: number; height: number }>`
+const Container = styled.img<{ width: number; height: number; clickable?: string }>`
   width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
   display: inline-block;
   image-rendering: pixelated;
-  cursor: pointer;
+  cursor: ${(props) => (props.clickable ? 'pointer' : 'default')};
 `
 
 export default Image

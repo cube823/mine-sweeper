@@ -11,8 +11,7 @@ const Cell = ({ cell, coord }: { cell: ICell; coord: Coord }) => {
   const onLeftClick = useCallback(
     (e: MouseEvent<HTMLImageElement>) => {
       e.preventDefault()
-      if (e.button !== 0) return
-      if (cell.type === 'flagged' || cell.type === 'question') return
+      if (e.button !== 0 || cell.type !== 'veiled') return
 
       if (gameStatus === 'ready') return dispatch(startGame({ startCoord: coord, mines: mines }))
       if (gameStatus === 'playing') return dispatch(unveilCell(coord))
@@ -62,6 +61,7 @@ const Cell = ({ cell, coord }: { cell: ICell; coord: Coord }) => {
       onClick={onLeftClick}
       onContextMenu={onRightClick}
       src={src}
+      clickable={cell.type === 'veiled'}
     />
   )
 }

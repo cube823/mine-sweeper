@@ -16,7 +16,9 @@ const Emoji = () => {
 
   const onReset = () => dispatch(populateBoard(setting))
 
-  return <Image width={26} height={26} onClick={onReset} src={src} alt='reset-emoji-button' />
+  return (
+    <Image clickable width={26} height={26} onClick={onReset} src={src} alt='reset-emoji-button' />
+  )
 }
 
 export default Emoji
