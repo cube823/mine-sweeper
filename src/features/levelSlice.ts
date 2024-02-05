@@ -15,7 +15,7 @@ interface LevelSlice {
   modalOpen: boolean
 }
 
-const levelState: Record<Level, Setting> = {
+export const levelState: Record<Level, Setting> = {
   beginner: {
     rows: 8,
     columns: 8,
