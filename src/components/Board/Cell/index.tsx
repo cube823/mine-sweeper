@@ -1,30 +1,44 @@
-import { MouseEvent, useMemo } from 'react'
-import { styled } from 'styled-components'
-import { Coord, ICell, makeFlag, revealCell, startGame } from '../../../features/gameSlice'
+import { memo, MouseEvent, useCallback, useMemo } from 'react'
+import {
+  Coord,
+  ICell,
+  makeFlag,
+  unveilCell,
+  startGame,
+  updateLeftFlagCount,
+} from '../../../features/gameSlice'
 import { useAppDispatch, useAppSelector } from '../../../store'
+import Image from '../../Common/Image'
 
 const Cell = ({ cell, coord }: { cell: ICell; coord: Coord }) => {
   const dispatch = useAppDispatch()
-  const { gameStatus } = useAppSelector((state) => state.gameReducer)
-  const { setting } = useAppSelector((state) => state.levelReducer)
+  const { gameStatus, leftFlagCount } = useAppSelector((state) => state.gameReducer)
+  const { mines } = useAppSelector((state) => state.levelReducer.setting)
 
-  const onLeftClick = (e: MouseEvent<HTMLImageElement>) => {
-    e.preventDefault()
-    if (e.button !== 0) return
-    if (cell.type === 'flagged' || cell.type === 'question') return
+  const onLeftClick = useCallback(
+    (e: MouseEvent<HTMLImageElement>) => {
+      e.preventDefault()
+      if (e.button !== 0) return
+      if (cell.type === 'flagged' || cell.type === 'question') return
 
-    if (gameStatus === 'ready')
-      return dispatch(startGame({ startPosition: coord, mines: setting.mines }))
+      if (gameStatus === 'ready') return dispatch(startGame({ startCoord: coord, mines: mines }))
+      if (gameStatus === 'playing') return dispatch(unveilCell(coord))
+    },
+    [cell.type, gameStatus, coord, mines]
+  )
 
-    if (gameStatus === 'playing') return dispatch(revealCell(coord))
-  }
+  const onRightClick = useCallback(
+    (e: MouseEvent<HTMLImageElement>) => {
+      e.preventDefault()
+      if (e.button !== 2) return
+      if (leftFlagCount === 0 && cell.type === 'veiled') {
+        dispatch(updateLeftFlagCount(mines))
+      }
 
-  const onRightClick = (e: MouseEvent<HTMLImageElement>) => {
-    e.preventDefault()
-    if (e.button !== 2) return
-
-    dispatch(makeFlag(coord))
-  }
+      dispatch(makeFlag(coord))
+    },
+    [coord]
+  )
 
   const src = useMemo(() => {
     switch (cell.type) {
@@ -41,19 +55,20 @@ const Cell = ({ cell, coord }: { cell: ICell; coord: Coord }) => {
         return `/open${cell.neighborMines}.gif`
 
       default:
-        return '/facepirate.png'
+        return '/facepirate.png' // 잘못된 이미지
     }
   }, [cell.type])
 
-  return <Main onClick={onLeftClick} onContextMenu={onRightClick} src={src} />
+  return (
+    <Image
+      width={16}
+      height={16}
+      alt='minesweeper-cell'
+      onClick={onLeftClick}
+      onContextMenu={onRightClick}
+      src={src}
+    />
+  )
 }
 
-const Main = styled.img`
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  image-rendering: pixelated;
-  cursor: pointer;
-`
-
-export default Cell
+export default memo(Cell)

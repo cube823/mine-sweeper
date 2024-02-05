@@ -12,8 +12,8 @@ export interface ICell {
 
 interface GameSlice {
   cells: Coord[]
-
   board: ICell[][]
+  leftFlagCount: number
   gameStatus: GameStatus
 }
 
@@ -25,10 +25,11 @@ export type Coord = {
 const initialState: GameSlice = {
   cells: [],
   board: [],
+  leftFlagCount: 0,
   gameStatus: 'ready',
 }
 
-const getCount = (board: ICell[][], coord: Coord) => {
+const getMineCount = (board: ICell[][], coord: Coord) => {
   const { x, y } = coord
   let count = 0
   for (let yOffset = -1; yOffset <= 1; yOffset++) {
@@ -46,8 +47,8 @@ const getCount = (board: ICell[][], coord: Coord) => {
   return count
 }
 
-const areaOpen = (startPosition: Coord, board: ICell[][]) => {
-  const stack: Coord[] = [startPosition]
+const areaOpen = (startCoord: Coord, board: ICell[][]) => {
+  const stack: Coord[] = [startCoord]
 
   while (stack.length) {
     const coord = stack.pop()
@@ -61,7 +62,7 @@ const areaOpen = (startPosition: Coord, board: ICell[][]) => {
     const cell = board[y][x]
     if (cell.type === 'unveiled') continue
 
-    const count = getCount(board, coord)
+    const count = getMineCount(board, coord)
 
     board[y][x].type = 'unveiled'
     board[y][x].neighborMines = count
@@ -86,6 +87,7 @@ const gameSlice = createSlice({
     populateBoard: (state, action: PayloadAction<Setting>) => {
       state.board = []
       state.gameStatus = 'ready'
+      state.leftFlagCount = 0
 
       const cells: Coord[] = []
       for (let y = 0; y < action.payload.columns; y++) {
@@ -101,11 +103,11 @@ const gameSlice = createSlice({
 
     startGame: (
       state,
-      { payload: { startPosition, mines } }: PayloadAction<{ startPosition: Coord; mines: number }>
+      { payload: { startCoord, mines } }: PayloadAction<{ startCoord: Coord; mines: number }>
     ) => {
       state.gameStatus = 'playing'
       const cells = [...state.cells].filter(
-        (cell) => cell.x !== startPosition.x || cell.y !== startPosition.y
+        (cell) => cell.x !== startCoord.x || cell.y !== startCoord.y
       )
 
       for (let mineCount = 0; mineCount < mines; mineCount++) {
@@ -115,7 +117,7 @@ const gameSlice = createSlice({
         cells.splice(index, 1)
       }
 
-      const newBoard = areaOpen(startPosition, state.board)
+      const newBoard = areaOpen(startCoord, state.board)
       state.board = newBoard
     },
 
@@ -123,9 +125,11 @@ const gameSlice = createSlice({
       const { x, y } = action.payload
       switch (state.board[y][x].type) {
         case 'veiled':
+          state.leftFlagCount -= 1
           state.board[y][x].type = 'flagged'
           break
         case 'flagged':
+          state.leftFlagCount += 1
           state.board[y][x].type = 'question'
           break
         case 'question':
@@ -133,7 +137,11 @@ const gameSlice = createSlice({
       }
     },
 
-    revealCell: (state, action: PayloadAction<Coord>) => {
+    updateLeftFlagCount: (state, action: PayloadAction<number>) => {
+      state.leftFlagCount = action.payload
+    },
+
+    unveilCell: (state, action: PayloadAction<Coord>) => {
       const { x, y } = action.payload
       if (state.gameStatus !== 'playing') return
       if (state.board[y][x].type !== 'veiled') return
@@ -144,7 +152,7 @@ const gameSlice = createSlice({
         return
       }
 
-      const count = getCount(state.board, action.payload)
+      const count = getMineCount(state.board, action.payload)
 
       if (count === 0) {
         state.board = areaOpen(action.payload, state.board)
@@ -157,6 +165,7 @@ const gameSlice = createSlice({
   },
 })
 
-export const { populateBoard, makeFlag, startGame, revealCell } = gameSlice.actions
+export const { populateBoard, startGame, makeFlag, updateLeftFlagCount, unveilCell } =
+  gameSlice.actions
 
 export default gameSlice.reducer
