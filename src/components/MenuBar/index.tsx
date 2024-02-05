@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { populateBoard } from '../../features/gameSlice'
 import { Level, levelState, updateLevel, updateSetting } from '../../features/levelSlice'
 import { useAppDispatch, useAppSelector } from '../../store'
@@ -18,7 +19,11 @@ const MenuBar = () => {
   const [customModalIsOpen, setCustomModalIsOpen] = useState(false)
 
   const toggleSelectIsOpen = () => setSelectIsOpen((current) => !current)
-  const toggleCustomModalIsOpen = () => setCustomModalIsOpen((current) => !current)
+  const toggleCustomModalIsOpen = () =>
+    setCustomModalIsOpen((current) => {
+      if (current) setSelectIsOpen(false)
+      return !current
+    })
 
   const handleLevelChange = (level: Level) => {
     toggleSelectIsOpen()
@@ -31,11 +36,11 @@ const MenuBar = () => {
   }
 
   return (
-    <S.Main onClick={toggleSelectIsOpen}>
-      <S.Item>{menu[0]}</S.Item>
+    <S.Main>
+      <S.Item onClick={toggleSelectIsOpen}>{menu[0]}</S.Item>
 
       {selectIsOpen && (
-        <S.Modal>
+        <S.Select>
           <S.Frame>
             {levelList.map((level) => (
               <S.Option
@@ -64,12 +69,14 @@ const MenuBar = () => {
               </S.Option>
             ))}
           </S.Frame>
-        </S.Modal>
+        </S.Select>
       )}
 
-      {customModalIsOpen && (
-        <CustomModal currentSetting={setting} toggleModalOpen={toggleCustomModalIsOpen} />
-      )}
+      {customModalIsOpen &&
+        createPortal(
+          <CustomModal currentSetting={setting} toggleModalOpen={toggleCustomModalIsOpen} />,
+          document.body
+        )}
     </S.Main>
   )
 }

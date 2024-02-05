@@ -10,6 +10,7 @@ const Item = styled.div`
   height: 14px;
   margin-left: 2px;
   margin-bottom: 2px;
+  cursor: pointer;
 `
 
 const Select = styled.div`
