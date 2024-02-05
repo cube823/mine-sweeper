@@ -12,6 +12,7 @@ const levelList = Object.keys(levelState) as Level[]
 const MenuBar = () => {
   const dispatch = useAppDispatch()
   const { level: currentLevel } = useAppSelector((state) => state.levelReducer)
+  const { setting } = useAppSelector((state) => state.levelReducer)
 
   const [selectIsOpen, setSelectIsOpen] = useState(false)
   const [customModalIsOpen, setCustomModalIsOpen] = useState(false)
@@ -66,7 +67,9 @@ const MenuBar = () => {
         </S.Modal>
       )}
 
-      {customModalIsOpen && <CustomModal toggleModalOpen={toggleCustomModalIsOpen} />}
+      {customModalIsOpen && (
+        <CustomModal currentSetting={setting} toggleModalOpen={toggleCustomModalIsOpen} />
+      )}
     </S.Main>
   )
 }

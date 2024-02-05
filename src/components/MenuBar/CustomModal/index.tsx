@@ -1,18 +1,26 @@
-import { useState } from 'react'
+import { ChangeEvent, MouseEvent, useState } from 'react'
 import * as S from './style'
-import { Setting, levelState, updateLevel, updateSetting } from '../../../features/levelSlice'
+import { Setting, updateLevel, updateSetting } from '../../../features/levelSlice'
 import { populateBoard } from '../../../features/gameSlice'
 import { useAppDispatch } from '../../../store'
 
 interface CustomModalProps {
+  currentSetting: Setting
   toggleModalOpen: () => void
 }
 
-const CustomModal = ({ toggleModalOpen }: CustomModalProps) => {
+const CustomModal = ({ currentSetting, toggleModalOpen }: CustomModalProps) => {
   const dispatch = useAppDispatch()
-  const [setting, setSetting] = useState<Setting>(levelState.custom)
+  const [setting, setSetting] = useState<Setting>(currentSetting)
 
-  const handleSettingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    toggleModalOpen()
+  }
+
+  const handleSettingChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
 
     if (Number.isNaN(Number(value)) && value) return
@@ -37,7 +45,7 @@ const CustomModal = ({ toggleModalOpen }: CustomModalProps) => {
     return true
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     if (!validate()) {
       alert('Minesweeper dimensions invalid')
       return
@@ -46,7 +54,7 @@ const CustomModal = ({ toggleModalOpen }: CustomModalProps) => {
     dispatch(updateSetting(setting))
     dispatch(populateBoard(setting))
     dispatch(updateLevel('custom'))
-    toggleModalOpen()
+    closeModal(e)
   }
 
   setting?.rows
@@ -54,7 +62,7 @@ const CustomModal = ({ toggleModalOpen }: CustomModalProps) => {
     <S.Dialog>
       <S.Header>
         <S.Title>Custom Game Setup</S.Title>
-        <S.CloseButton onClick={toggleModalOpen}>CLOSE</S.CloseButton>
+        <S.CloseButton onClick={closeModal}>CLOSE</S.CloseButton>
       </S.Header>
 
       <S.Content>
