@@ -15,14 +15,36 @@ interface LevelSlice {
   modalOpen: boolean
 }
 
-const initialState: LevelSlice = {
-  level: 'beginner',
-  modalOpen: false,
-  setting: {
+const levelState: Record<Level, Setting> = {
+  beginner: {
     rows: 8,
     columns: 8,
     mines: 10,
   },
+
+  intermediate: {
+    rows: 16,
+    columns: 16,
+    mines: 40,
+  },
+
+  expert: {
+    rows: 16,
+    columns: 31,
+    mines: 99,
+  },
+
+  custom: {
+    rows: 8,
+    columns: 8,
+    mines: 10,
+  },
+}
+
+const initialState: LevelSlice = {
+  level: 'beginner',
+  modalOpen: false,
+  setting: levelState['beginner'],
 }
 
 const levelSlice = createSlice({
