@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { populateBoard } from '../../features/gameSlice'
 import { Level, levelState, updateLevel, updateSetting } from '../../features/levelSlice'
 import { useAppDispatch, useAppSelector } from '../../store'
+import Image from '../Common/Image'
 import CustomModal from './CustomModal'
 import * as S from './style'
 
@@ -45,7 +46,19 @@ const MenuBar = () => {
                   handleLevelChange(level)
                 }}
               >
-                {currentLevel === level && <S.Checked src={'/checked.gif'} />}
+                {currentLevel === level && (
+                  <Image
+                    src={'/checked.gif'}
+                    alt='checked'
+                    width={10}
+                    height={10}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: '-10px',
+                    }}
+                  />
+                )}
                 {level}
               </S.Option>
             ))}

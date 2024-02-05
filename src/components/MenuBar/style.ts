@@ -35,14 +35,4 @@ const Option = styled.div`
   gap: 2px;
 `
 
-const Checked = styled.img`
-  position: absolute;
-  top: 0;
-  left: -10px;
-  width: 10px;
-  height: 10px;
-  display: inline-block;
-  image-rendering: pixelated;
-`
-
-export { Main, Item, Modal, Frame, Option, Checked }
+export { Main, Item, Modal, Frame, Option }

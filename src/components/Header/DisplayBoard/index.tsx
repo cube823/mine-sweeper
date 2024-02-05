@@ -1,4 +1,4 @@
-import { styled } from 'styled-components'
+import Image from '../../Common/Image'
 
 type DisplayBoardProps = {
   value: number
@@ -20,18 +20,21 @@ const imgSrcset = [
 function DisplayBoard({ value }: DisplayBoardProps) {
   return (
     <div>
-      <Image src={imgSrcset[Math.floor(value / 100) % 10]} alt={'third-digit'} />
-      <Image src={imgSrcset[Math.floor(value / 10) % 10]} alt={'second-digit'} />
-      <Image src={imgSrcset[value % 10]} alt={'first-digit'} />
+      <Image
+        width={13}
+        height={23}
+        src={imgSrcset[Math.floor(value / 100) % 10]}
+        alt={'third-digit'}
+      />
+      <Image
+        width={13}
+        height={23}
+        src={imgSrcset[Math.floor(value / 10) % 10]}
+        alt={'second-digit'}
+      />
+      <Image width={13} height={23} src={imgSrcset[value % 10]} alt={'first-digit'} />
     </div>
   )
 }
-
-const Image = styled.img`
-  width: 13px;
-  height: 23px;
-  display: inline-block;
-  image-rendering: pixelated;
-`
 
 export default DisplayBoard
