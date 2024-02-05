@@ -16,6 +16,7 @@ interface GameSlice {
   board: ICell[][]
   flagCount: number
   unveiledCount: number
+  clickCount: number
   gameStatus: GameStatus
 }
 
@@ -28,6 +29,7 @@ const initialState: GameSlice = {
   cells: [],
   board: [],
   flagCount: 0,
+  clickCount: 0,
   unveiledCount: 0,
   gameStatus: 'ready',
 }
@@ -113,6 +115,8 @@ const gameSlice = createSlice({
       state.board = []
       state.gameStatus = 'ready'
       state.flagCount = 0
+      state.unveiledCount = 0
+      state.clickCount = 0
 
       const cells: Coord[] = []
       for (let y = 0; y < action.payload.rows; y++) {
@@ -142,11 +146,13 @@ const gameSlice = createSlice({
 
       const { board, unveiledCount } = areaOpen(startCoord, state.board)
 
+      state.clickCount += 1
       state.board = board
       state.unveiledCount = unveiledCount
     },
 
     makeFlag: (state, action: PayloadAction<Coord>) => {
+      state.clickCount += 1
       const { x, y } = action.payload
       switch (state.board[y][x].type) {
         case 'veiled':
@@ -169,6 +175,7 @@ const gameSlice = createSlice({
     },
 
     unveilCell: (state, action: PayloadAction<Coord>) => {
+      state.clickCount += 1
       const { x, y } = action.payload
       if (state.gameStatus !== 'playing') return
       if (state.board[y][x].type !== 'veiled') return
@@ -197,10 +204,20 @@ const gameSlice = createSlice({
     updateGameStatus: (state, action: PayloadAction<GameStatus>) => {
       state.gameStatus = action.payload
     },
+
+    flagEntireBoard: (state) => {
+      for (let y = 0; y < state.board.length; y++) {
+        for (let x = 0; x < state.board[0].length; x++) {
+          if (state.board[y][x].type === 'veiled' || state.board[y][x].type === 'question') {
+            state.board[y][x].type = 'flagged'
+          }
+        }
+      }
+    },
   },
 })
 
-export const { populateBoard, startGame, updateGameStatus, makeFlag, unveilCell } =
+export const { populateBoard, startGame, updateGameStatus, makeFlag, unveilCell, flagEntireBoard } =
   gameSlice.actions
 
 export default gameSlice.reducer

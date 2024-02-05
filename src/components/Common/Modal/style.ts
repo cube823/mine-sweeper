@@ -17,7 +17,6 @@ const Dialog = styled.dialog`
   align-items: center;
   justify-content: center;
   width: 500px;
-  height: 300px;
   top: 50%;
   left: 0;
   gap: 20px;
@@ -54,6 +53,10 @@ const Title = styled.p`
   font-weight: bold;
 `
 
+const Description = styled.p`
+  font-size: 16px;
+`
+
 const CloseButton = styled.button`
   font-size: 24px;
   display: block;
@@ -78,4 +81,23 @@ const Label = styled.label`
   width: 120px;
 `
 
-export const Modal = { Flex, Input, Dialog, Header, Title, CloseButton, Content, Label }
+const SubmitButton = styled.button`
+  border: 1px solid ${({ theme }) => theme.colors.gray};
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: ${({ theme }) => theme.colors.white};
+  cursor: pointer;
+`
+
+export const Modal = {
+  Flex,
+  Input,
+  Dialog,
+  Header,
+  Title,
+  Description,
+  CloseButton,
+  SubmitButton,
+  Content,
+  Label,
+}
