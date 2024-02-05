@@ -20,9 +20,9 @@ const imgSrcset = [
 function DisplayBoard({ value }: DisplayBoardProps) {
   return (
     <div>
-      <Image src={imgSrcset[Math.floor(value / 100) % 10]} />
-      <Image src={imgSrcset[Math.floor(value / 10) % 10]} />
-      <Image src={imgSrcset[value % 10]} />
+      <Image src={imgSrcset[Math.floor(value / 100) % 10]} alt={'third-digit'} />
+      <Image src={imgSrcset[Math.floor(value / 10) % 10]} alt={'second-digit'} />
+      <Image src={imgSrcset[value % 10]} alt={'first-digit'} />
     </div>
   )
 }
