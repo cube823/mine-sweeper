@@ -1,9 +1,5 @@
 import Image from '../Image'
 
-type DisplayBoardProps = {
-  value: number
-}
-
 const imgSrcset = [
   '/time_zero.png',
   '/time_one.png',
@@ -16,6 +12,10 @@ const imgSrcset = [
   '/time_eight.png',
   '/time_nine.png',
 ]
+
+interface DisplayBoardProps {
+  value: number
+}
 
 function DisplayBoard({ value }: DisplayBoardProps) {
   return (
