@@ -7,6 +7,7 @@ export type GameStatus = 'ready' | 'playing' | 'won' | 'lost'
 export interface ICell {
   type: 'veiled' | 'flagged' | 'question' | 'mine' | 'unveiled'
   isMine: boolean
+  isFlagged: boolean
   neighborMines?: number
 }
 
@@ -90,11 +91,11 @@ const gameSlice = createSlice({
       state.leftFlagCount = 0
 
       const cells: Coord[] = []
-      for (let y = 0; y < action.payload.columns; y++) {
+      for (let y = 0; y < action.payload.rows; y++) {
         state.board.push([])
-        for (let x = 0; x < action.payload.rows; x++) {
+        for (let x = 0; x < action.payload.columns; x++) {
           cells.push({ x, y })
-          state.board[y].push({ type: 'veiled', isMine: false })
+          state.board[y].push({ type: 'veiled', isMine: false, isFlagged: false })
         }
       }
 
@@ -126,10 +127,12 @@ const gameSlice = createSlice({
       switch (state.board[y][x].type) {
         case 'veiled':
           state.leftFlagCount -= 1
+          state.board[y][x].isFlagged = true
           state.board[y][x].type = 'flagged'
           break
         case 'flagged':
           state.leftFlagCount += 1
+          state.board[y][x].isFlagged = false
           state.board[y][x].type = 'question'
           break
         case 'question':
