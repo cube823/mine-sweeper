@@ -5,10 +5,12 @@ import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import gameReducer from '../features/gameSlice'
 import levelReducer from '../features/levelSlice'
+import timeReducer from '../features/timeSlice'
 
 const rootReducer = combineReducers({
   gameReducer,
   levelReducer,
+  timeReducer,
 })
 
 const persistConfig = {
