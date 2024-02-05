@@ -13,7 +13,7 @@ const GlobalStyles = createGlobalStyle`
         margin: 0;
         padding: 0;
         border: 0;
-        font-size: 14px;
+        font-size: 12px;
         vertical-align: baseline;
     }
     body{
