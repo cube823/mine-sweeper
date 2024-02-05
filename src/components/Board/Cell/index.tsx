@@ -50,8 +50,13 @@ const Cell = ({ cell, coord }: { cell: ICell; coord: Coord }) => {
         return '/bombquestion.gif'
       case 'mine':
         return '/bombrevealed.gif'
+      case 'misMine':
+        return '/bombmisflagged.gif'
       case 'unveiled':
-        if (cell.isMine) return '/bombdeath.gif'
+        if (cell.isMine) {
+          if (cell.isFlagged) return '/bombflagged.gif'
+          return '/bombdeath.gif'
+        }
         return `/open${cell.neighborMines}.gif`
 
       default:

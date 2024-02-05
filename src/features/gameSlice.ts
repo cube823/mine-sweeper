@@ -5,7 +5,7 @@ import { Setting } from './levelSlice'
 export type GameStatus = 'ready' | 'playing' | 'won' | 'lost'
 
 export interface ICell {
-  type: 'veiled' | 'flagged' | 'question' | 'mine' | 'unveiled'
+  type: 'veiled' | 'flagged' | 'question' | 'mine' | 'misMine' | 'unveiled'
   isMine: boolean
   isFlagged: boolean
   neighborMines?: number
@@ -15,6 +15,7 @@ interface GameSlice {
   cells: Coord[]
   board: ICell[][]
   leftFlagCount: number
+  unveiledCount: number
   gameStatus: GameStatus
 }
 
@@ -27,6 +28,7 @@ const initialState: GameSlice = {
   cells: [],
   board: [],
   leftFlagCount: 0,
+  unveiledCount: 0,
   gameStatus: 'ready',
 }
 
@@ -38,9 +40,7 @@ const getMineCount = (board: ICell[][], coord: Coord) => {
       const newY = y + yOffset
       const newX = x + xOffset
       if (newY >= 0 && newY < board.length && newX >= 0 && newX < board[0].length) {
-        if (board[newY][newX].isMine) {
-          count++
-        }
+        if (board[newY][newX].isMine) count++
       }
     }
   }
@@ -50,10 +50,11 @@ const getMineCount = (board: ICell[][], coord: Coord) => {
 
 const areaOpen = (startCoord: Coord, board: ICell[][]) => {
   const stack: Coord[] = [startCoord]
+  let unveiledCount = 0
 
   while (stack.length) {
     const coord = stack.pop()
-    if (!coord) return board
+    if (!coord) return { board, unveiledCount }
 
     const { x, y } = coord
 
@@ -67,6 +68,7 @@ const areaOpen = (startCoord: Coord, board: ICell[][]) => {
 
     board[y][x].type = 'unveiled'
     board[y][x].neighborMines = count
+    unveiledCount++
 
     if (!cell.isMine && count === 0) {
       for (let dy = -1; dy <= 1; dy++) {
@@ -78,7 +80,29 @@ const areaOpen = (startCoord: Coord, board: ICell[][]) => {
     }
   }
 
-  return board
+  return { board, unveiledCount }
+}
+
+const unveilEntireBoard = (board: ICell[][]) => {
+  const newBoard: ICell[][] = [...board]
+
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board[0].length; x++) {
+      if (board[y][x].type === 'unveiled') continue
+
+      if (board[y][x].isMine) {
+        if (board[y][x].isFlagged) newBoard[y][x].type = 'flagged'
+        else newBoard[y][x].type = 'mine'
+      } else {
+        if (board[y][x].isFlagged) newBoard[y][x].type = 'misMine'
+        else newBoard[y][x].type = 'unveiled'
+      }
+      const count = getMineCount(board, { x, y })
+      newBoard[y][x].neighborMines = count
+    }
+  }
+
+  return newBoard
 }
 
 const gameSlice = createSlice({
@@ -118,8 +142,10 @@ const gameSlice = createSlice({
         cells.splice(index, 1)
       }
 
-      const newBoard = areaOpen(startCoord, state.board)
-      state.board = newBoard
+      const { board, unveiledCount } = areaOpen(startCoord, state.board)
+
+      state.board = board
+      state.unveiledCount += unveiledCount
     },
 
     makeFlag: (state, action: PayloadAction<Coord>) => {
@@ -152,16 +178,20 @@ const gameSlice = createSlice({
       if (state.board[y][x].isMine) {
         state.board[y][x].type = 'unveiled'
         state.gameStatus = 'lost'
+        unveilEntireBoard(state.board)
         return
       }
 
       const count = getMineCount(state.board, action.payload)
 
       if (count === 0) {
-        state.board = areaOpen(action.payload, state.board)
+        const { board, unveiledCount } = areaOpen(action.payload, state.board)
+        state.board = board
+        state.unveiledCount += unveiledCount
         return
       }
 
+      state.unveiledCount += 1
       state.board[y][x].neighborMines = count
       state.board[y][x].type = 'unveiled'
     },
