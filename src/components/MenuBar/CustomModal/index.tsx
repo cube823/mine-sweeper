@@ -84,7 +84,7 @@ const CustomModal = ({ currentSetting, toggleModalOpen }: CustomModalProps) => {
       </Modal.Content>
 
       <Modal.Flex>
-        <Modal.CloseButton onClick={onSubmit}>Ok</Modal.CloseButton>
+        <Modal.SubmitButton onClick={onSubmit}>Ok</Modal.SubmitButton>
       </Modal.Flex>
     </Modal.Dialog>
   )
