@@ -5,6 +5,7 @@ const Main = styled.div`
   border-radius: 10px;
   background-color: ${(props) => props.theme.colors.gray};
   padding: 7px;
+  padding-top: 5px;
   gap: 5px;
 `
 
