@@ -1,8 +1,8 @@
 import { ChangeEvent, MouseEvent, useState } from 'react'
-import * as S from './style'
 import { Setting, updateLevel, updateSetting } from '../../../features/levelSlice'
 import { populateBoard } from '../../../features/gameSlice'
 import { useAppDispatch } from '../../../store'
+import { Modal } from '../../Common/Modal/style'
 
 interface CustomModalProps {
   currentSetting: Setting
@@ -58,31 +58,35 @@ const CustomModal = ({ currentSetting, toggleModalOpen }: CustomModalProps) => {
   }
 
   return (
-    <S.Dialog>
-      <S.Header>
-        <S.Title>Custom Game Setup</S.Title>
-        <S.CloseButton onClick={closeModal}>CLOSE</S.CloseButton>
-      </S.Header>
+    <Modal.Dialog>
+      <Modal.Header>
+        <Modal.Title>Custom Game Setup</Modal.Title>
+        <Modal.CloseButton onClick={closeModal}>CLOSE</Modal.CloseButton>
+      </Modal.Header>
 
-      <S.Content>
-        <S.Flex>
-          <S.Label>Game Height: </S.Label>
-          <S.Input name='rows' value={setting.rows ?? ''} onChange={handleSettingChange} />
-        </S.Flex>
-        <S.Flex>
-          <S.Label>Game Width: </S.Label>
-          <S.Input name='columns' value={setting.columns ?? ''} onChange={handleSettingChange} />
-        </S.Flex>
-        <S.Flex>
-          <S.Label>Number of Bombs: </S.Label>
-          <S.Input name='mines' value={setting.mines ?? ''} onChange={handleSettingChange} />
-        </S.Flex>
-      </S.Content>
+      <Modal.Content>
+        <Modal.Flex>
+          <Modal.Label>Game Height: </Modal.Label>
+          <Modal.Input name='rows' value={setting.rows ?? ''} onChange={handleSettingChange} />
+        </Modal.Flex>
+        <Modal.Flex>
+          <Modal.Label>Game Width: </Modal.Label>
+          <Modal.Input
+            name='columns'
+            value={setting.columns ?? ''}
+            onChange={handleSettingChange}
+          />
+        </Modal.Flex>
+        <Modal.Flex>
+          <Modal.Label>Number of Bombs: </Modal.Label>
+          <Modal.Input name='mines' value={setting.mines ?? ''} onChange={handleSettingChange} />
+        </Modal.Flex>
+      </Modal.Content>
 
-      <S.Flex>
-        <S.CloseButton onClick={onSubmit}>Ok</S.CloseButton>
-      </S.Flex>
-    </S.Dialog>
+      <Modal.Flex>
+        <Modal.CloseButton onClick={onSubmit}>Ok</Modal.CloseButton>
+      </Modal.Flex>
+    </Modal.Dialog>
   )
 }
 

@@ -14,23 +14,24 @@ const Dialog = styled.dialog`
   display: flex;
   position: absolute;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   width: 500px;
   height: 300px;
-  top: 0;
+  top: 50%;
   left: 0;
   gap: 20px;
   z-index: 100;
 
-  transform: translate(-25%, -25%);
+  transform: translate(0%, -50%);
 
   padding: 20px;
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 16px;
   border: 0;
 
-  ::backdrop {
-    background-color: ${({ theme }) => theme.colors.black};
+  &::backdrop {
+    background-color: ${({ theme }) => theme.colors.white};
   }
 `
 
@@ -57,12 +58,13 @@ const CloseButton = styled.button`
   font-size: 24px;
   display: block;
   font-weight: bold;
+  color: ${({ theme }) => theme.colors.white};
   background-color: transparent;
   border: none;
   cursor: pointer;
   padding: 4px 8px 4px 8px;
   border-radius: 4px;
-  background-color: ${({ theme }) => theme.colors.gray};
+  background-color: ${({ theme }) => theme.colors.black};
 `
 
 const Content = styled.div`
@@ -76,4 +78,4 @@ const Label = styled.label`
   width: 120px;
 `
 
-export { Flex, Input, Dialog, Header, Title, CloseButton, Content, Label }
+export const Modal = { Flex, Input, Dialog, Header, Title, CloseButton, Content, Label }
