@@ -12,7 +12,6 @@ export interface Setting {
 interface LevelSlice {
   level: Level
   setting: Setting
-  modalOpen: boolean
 }
 
 export const levelState: Record<Level, Setting> = {
@@ -43,7 +42,6 @@ export const levelState: Record<Level, Setting> = {
 
 const initialState: LevelSlice = {
   level: 'beginner',
-  modalOpen: false,
   setting: levelState['beginner'],
 }
 
@@ -55,16 +53,12 @@ const levelSlice = createSlice({
       state.level = action.payload
     },
 
-    toggleLevelModal: (state) => {
-      state.modalOpen = !state.modalOpen
-    },
-
     updateSetting: (state, action: PayloadAction<LevelSlice['setting']>) => {
       state.setting = action.payload
     },
   },
 })
 
-export const { updateLevel, toggleLevelModal, updateSetting } = levelSlice.actions
+export const { updateLevel, updateSetting } = levelSlice.actions
 
 export default levelSlice.reducer
