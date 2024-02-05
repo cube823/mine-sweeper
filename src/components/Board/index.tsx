@@ -13,10 +13,8 @@ const Board = () => {
     dispatch(populateBoard(setting))
   }, [])
 
-  console.log('board', board)
-
   return (
-    <Main columns={board[0].length}>
+    <Main columns={setting.columns}>
       {board.map((rows, y) =>
         rows.map((cell, x) => <Cell key={`${x}, ${y}`} coord={{ x, y }} cell={cell} />)
       )}

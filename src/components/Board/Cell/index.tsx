@@ -1,19 +1,25 @@
 import { MouseEvent, useMemo } from 'react'
 import { styled } from 'styled-components'
-import { Coord, ICell, makeFlag, revealCell } from '../../../features/gameSlice'
-import { useAppDispatch } from '../../../store'
+import { Coord, ICell, makeFlag, revealCell, startGame } from '../../../features/gameSlice'
+import { useAppDispatch, useAppSelector } from '../../../store'
 
 const Cell = ({ cell, coord }: { cell: ICell; coord: Coord }) => {
   const dispatch = useAppDispatch()
+  const { gameStatus } = useAppSelector((state) => state.gameReducer)
+  const { setting } = useAppSelector((state) => state.levelReducer)
 
-  const onClick = (e: MouseEvent<HTMLImageElement>) => {
+  const onLeftClick = (e: MouseEvent<HTMLImageElement>) => {
     e.preventDefault()
     if (e.button !== 0) return
+    if (cell.type === 'flagged' || cell.type === 'question') return
 
-    dispatch(revealCell(coord))
+    if (gameStatus === 'ready')
+      return dispatch(startGame({ startPosition: coord, mines: setting.mines }))
+
+    if (gameStatus === 'playing') return dispatch(revealCell(coord))
   }
 
-  const onContextMenu = (e: MouseEvent<HTMLImageElement>) => {
+  const onRightClick = (e: MouseEvent<HTMLImageElement>) => {
     e.preventDefault()
     if (e.button !== 2) return
 
@@ -28,14 +34,18 @@ const Cell = ({ cell, coord }: { cell: ICell; coord: Coord }) => {
         return '/bombflagged.gif'
       case 'question':
         return '/bombquestion.gif'
+      case 'mine':
+        return '/bombrevealed.gif'
       case 'unveiled':
-        return '/time_eight.png'
+        if (cell.isMine) return '/bombdeath.gif'
+        return `/open${cell.neighborMines}.gif`
+
       default:
-        return '/time_nine.png'
+        return '/facepirate.png'
     }
   }, [cell.type])
 
-  return <Main onClick={onClick} onContextMenu={onContextMenu} src={src} />
+  return <Main onClick={onLeftClick} onContextMenu={onRightClick} src={src} />
 }
 
 const Main = styled.img`
