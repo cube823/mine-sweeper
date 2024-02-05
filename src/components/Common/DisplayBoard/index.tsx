@@ -1,4 +1,4 @@
-import Image from '../../Common/Image'
+import Image from '../Image'
 
 type DisplayBoardProps = {
   value: number

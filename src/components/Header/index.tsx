@@ -1,17 +1,14 @@
-import { useAppSelector } from '../../store'
-import DisplayBoard from './DisplayBoard'
+import CountDown from './CountDown'
 import Emoji from './Emoji'
+import MineCount from './MineCount'
 import * as S from './style'
 
 const Header = () => {
-  const { setting } = useAppSelector((state) => state.levelReducer)
-  const { time } = useAppSelector((state) => state.timeReducer)
-
   return (
     <S.Main>
-      <DisplayBoard value={setting.mines} />
+      <MineCount />
       <Emoji />
-      <DisplayBoard value={time} />
+      <CountDown />
     </S.Main>
   )
 }
