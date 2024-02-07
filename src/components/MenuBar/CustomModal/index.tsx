@@ -47,7 +47,9 @@ const CustomModal = ({ currentSetting, toggleModalOpen }: CustomModalProps) => {
 
   const onSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     if (!validate()) {
-      alert('Minesweeper dimensions invalid')
+      alert(
+        'Minesweeper dimensions invalid\nWidth from 1 to 49\nHeight from 1 to 49\nMines from 1 to squares / 3'
+      )
       return
     }
 
