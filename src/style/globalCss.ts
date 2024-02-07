@@ -18,6 +18,7 @@ const GlobalStyles = createGlobalStyle`
     }
     body{
         font-family: Helvetica, Arial, sans-serif;
+        background-color: #0e0e0e;
     }
     ol, ul{
         list-style: none;
