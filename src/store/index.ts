@@ -23,7 +23,10 @@ const reducer = persistReducer(persistConfig, rootReducer)
 
 const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 })
 
 export default store
@@ -31,7 +34,7 @@ export default store
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
-export const useAppSelector = <T,>(
+export const useAppSelector = <T>(
   selector: (state: RootState) => T,
   equalityFn?: (left: T, right: T) => boolean
 ) => useSelector(selector, equalityFn)
